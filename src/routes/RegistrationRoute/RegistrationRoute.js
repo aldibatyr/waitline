@@ -47,6 +47,7 @@ export default function SignUp(props) {
   const [email, setEmail] = useState(null)
   const [username, setUsername] = useState(null)
   const [password, setPassword] = useState(null)
+  const [error, setError] = useState(null)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,6 +57,19 @@ export default function SignUp(props) {
       .then(() => {
         props.history.push('/login')
       })
+      .catch(res => {
+        setError(res.error)
+      })
+  }
+
+  const renderError = () => {
+    if (error) {
+      return (
+        <div>
+          <p>{error}</p>
+        </div>
+      )
+    }
   }
   return (
     <Container component="main" maxWidth="xs">
@@ -67,6 +81,7 @@ export default function SignUp(props) {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        {renderError()}
         <form className={classes.form} onSubmit={(e) => handleSubmit(e)} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
