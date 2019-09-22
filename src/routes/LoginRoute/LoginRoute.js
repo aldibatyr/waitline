@@ -1,14 +1,16 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import AuthApiService from '../../services/auth-api-service';
+import WaitlineContext from '../../context/WaitlineContext'
 
 
 const useStyles = makeStyles(theme => ({
@@ -36,8 +38,38 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(props) {
   const classes = useStyles();
+  const context = useContext(WaitlineContext);
+  const [error, setError] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let input = {username, password}
+    console.log(input)
+    AuthApiService.postLogin(input)
+      .then(res => {
+        console.log(e)
+        context.processLogin(res.authToken)
+        props.history.push('/liveline')
+      })
+      .catch(res => {
+        console.log(res)
+        setError(res.error)
+      })
+  }
+
+  const renderError = () => {
+    if (error) {
+      return (
+        <div>
+          <p>{error}</p>
+        </div>
+      )
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -49,7 +81,8 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} validate>
+        {renderError()}
+        <form className={classes.form} onSubmit={(e) => handleSubmit(e)} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -60,6 +93,7 @@ export default function SignIn() {
             name="username"
             autoComplete="username"
             autoFocus
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -71,6 +105,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button
             type="submit"
@@ -83,7 +118,7 @@ export default function SignIn() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/register" variant="body2">
+              <Link to="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

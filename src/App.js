@@ -35,16 +35,15 @@ export default class App extends React.Component {
               exact path={['/', '/register']}
               component={RegistrationRoute}
             />
-            {<PublicOnlyRoute
+            <PublicOnlyRoute
               path={'/login'}
               component={LoginRoute}
             />
-            /*
             <PrivateRoute
               path={'/liveline'}
               component={LiveLineRoute}
             />
-            <PrivateRoute
+            {/* <PrivateRoute
               path={'/addguest'}
               component={AddGuestRoute}
             /> */}

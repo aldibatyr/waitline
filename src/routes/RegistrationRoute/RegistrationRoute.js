@@ -3,14 +3,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthApiService from '../../services/auth-api-service';
-import { InputBase } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -158,7 +157,7 @@ export default function SignUp(props) {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link to="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

@@ -1,9 +1,10 @@
+import 'dotenv';
 import config from '../config';
 import TokenService from './token-service';
 
 const AuthApiService = {
   postUser(user) {
-    return fetch(`http://localhost:8000/api/users`, {
+    return fetch(`${config.API_ENDPOINT}/users`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

@@ -27,7 +27,7 @@ const IdleService = {
       )
     )
   },
-  urRegisterIdleResets() {
+  unRegisterIdleResets() {
     clearTimeout(_timeoutId)
     _notIdleEvents.forEach(event =>
       document.removeEventListener(
