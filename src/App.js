@@ -43,10 +43,10 @@ export default class App extends React.Component {
               path={'/liveline'}
               component={LiveLineRoute}
             />
-            {/* <PrivateRoute
+            <PrivateRoute
               path={'/addguest'}
               component={AddGuestRoute}
-            /> */}
+            />
           </Switch>
         </main>
       </div>

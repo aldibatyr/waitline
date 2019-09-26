@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import WaitlineContext from '../../context/WaitlineContext';
+import Timer from '../../components/Timer/Timer';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -8,6 +10,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { red } from '@material-ui/core/colors';
+import LineApiService from '../../services/line-api-service';
 
 
 const useStyles = makeStyles(theme => ({
@@ -45,35 +48,53 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotate(180deg)',
   }
 }))
-export default function GuestCard() {
+export default function GuestCard(props) {
   const classes = useStyles();
+  const context = useContext(WaitlineContext);
   const [expanded, setExpanded] = useState(false);
+  const [timer, setTimer] = useState()
+  const [error, setError] = useState(null);
+  const [id] = useState(props.id)
+
+  function formatPhoneNumber(phoneNumberString) {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+    }
+    return phoneNumberString;
+  }
 
   function handleExpandClick() {
     setExpanded(!expanded);
   }
+  function handleDeleteClick() {
+    console.log(id)
+    LineApiService.deleteGuest(id)
+      .then(() => {
+        context.deleteGuest(id)
+      })
+  }
 
+  function renderTimer() {
+
+  }
   return (
     <Card className={classes.card}>
       <CardHeader
         className={classes.header}
         avatar={
           <Avatar className={classes.avatar}>
-            6
+            {props.size}
           </Avatar>
         }
         title={
           <Typography variant="h6" component="p">
-            Name
+            {props.name}
           </Typography>
 
         }
       />
-      <CardContent className={classes.content}>
-        <Typography variant="inherit" component="p">
-          Timer:
-        </Typography>
-      </CardContent>
       <CardActions disableSpacing>
         <IconButton
           className={clsx(classes.expand, {
@@ -89,15 +110,18 @@ export default function GuestCard() {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent className={classes.content}>
           <Typography variant="inherit">
-            Phone Number: 
+            Phone Number: {formatPhoneNumber(props.number)}
           </Typography>
         </CardContent>
         <CardActions className={classes.actions} disableSpacing>
           <IconButton className={classes.actionButton} aria-label="confirm">
             <CheckIcon/>
           </IconButton>
-          <IconButton className={classes.actionButton} aria-label="cancel">
+          <IconButton onClick={handleDeleteClick} className={classes.actionButton} aria-label="cancel">
             <CloseIcon/>
+          </IconButton>
+          <IconButton>
+            <MoreVertIcon/>
           </IconButton>
         </CardActions>
       </Collapse>

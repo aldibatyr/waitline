@@ -6,10 +6,13 @@ import IdleService from '../services/idle-service';
 const WaitlineContext = React.createContext({
   user: {},
   error: null,
+  guests: [],
   setError: () => {},
   setUser: () => {},
   processLogin: () => {},
   processLogout: () => {},
+  setGuests: () => {},
+  deleteGuest: () => {},
 })
 
 export default WaitlineContext
@@ -21,11 +24,14 @@ export class WaitlineProvider extends Component {
     const state = {
       user: {}, 
       error: null,
+      guests: [],
       setError: this.setError,
       clearError: this.clearError,
       setUser: this.setUser,
       processLogin: this.processLogin,
-      processLogout: this.processLogout
+      processLogout: this.processLogout,
+      setGuests: this.setGuests,
+      deleteGuest: this.deleteGuest,
     }
 
     const jwtPayload = TokenService.parseAuthToken()
@@ -66,6 +72,16 @@ export class WaitlineProvider extends Component {
 
   setUser = user => {
     this.setState({user})
+  }
+
+  setGuests = guests => {
+    this.setState({guests})
+  }
+
+  deleteGuest = guestId => {
+    this.setState({
+      guests: this.state.guests.filter(guest => guest.id !== guestId)
+    })
   }
 
   processLogin = authToken => {

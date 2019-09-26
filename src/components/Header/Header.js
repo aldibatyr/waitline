@@ -8,6 +8,7 @@ import WaitlineContext from '../../context/WaitlineContext';
 import TokenService from '../../services/token-service';
 import {Link} from 'react-router-dom';
 import './Header.css'
+import { Avatar } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,7 +53,9 @@ export default function ButtonAppBar(props) {
     if (context.user.username) {
       return (
         <Toolbar>
-          Signed in as {context.user.username.toUpperCase()}
+          <Avatar>
+            {context.user.username.charAt(0).toUpperCase()}
+          </Avatar>
         </Toolbar>
       )
     } else {
