@@ -13,6 +13,7 @@ const WaitlineContext = React.createContext({
   processLogout: () => {},
   setGuests: () => {},
   deleteGuest: () => {},
+  updateGuest: () => {},
 })
 
 export default WaitlineContext
@@ -32,6 +33,7 @@ export class WaitlineProvider extends Component {
       processLogout: this.processLogout,
       setGuests: this.setGuests,
       deleteGuest: this.deleteGuest,
+      updateGuest: this.updateGuest,
     }
 
     const jwtPayload = TokenService.parseAuthToken()
@@ -81,6 +83,13 @@ export class WaitlineProvider extends Component {
   deleteGuest = guestId => {
     this.setState({
       guests: this.state.guests.filter(guest => guest.id !== guestId)
+    })
+  }
+
+  updateGuest = (updatedGuest) => {
+    this.setState({
+      guests: this.state.guests.map(
+        guest => (guest.id !== updatedGuest.id) ? guest : updatedGuest)
     })
   }
 

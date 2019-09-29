@@ -1,10 +1,10 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom'
+import {Switch} from 'react-router-dom'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import PublicOnlyRoute from './components/PublicOnlyRoute/PublicOnlyRoute';
 import './App.css';
 import RegistrationRoute from './routes/RegistrationRoute/RegistrationRoute';
-import NotFoundRoute from './routes/NotFoundRoute/NotFoundRoute';
+// import NotFoundRoute from './routes/NotFoundRoute/NotFoundRoute';
 import LoginRoute from './routes/LoginRoute/LoginRoute';
 import LiveLineRoute from './routes/LiveLineRoute/LiveLineRoute';
 import AddGuestRoute from './routes/AddGuestRoute/AddGuestRoute';

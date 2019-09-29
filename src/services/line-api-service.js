@@ -57,11 +57,13 @@ const LineApiService = {
       },
       body: JSON.stringify(editedFields)
     })
-      .then(res => 
-        (!res.ok)
-          ? res.json().then(e => Promise.reject(e))
-          : res.json()
-      )
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(e => Promise.reject(e))
+        } else {
+          return res
+        }
+      })
       .catch(error => {
         console.error({error})
       }) 

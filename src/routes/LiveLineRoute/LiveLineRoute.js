@@ -1,11 +1,10 @@
-import React, {useState, useContext, useEffect} from 'react';
-import EmptyMessage from '../../components/EmptyMessage/EmptyMessage';
+import React, {useContext, useEffect} from 'react';
 import WaitlineContext from '../../context/WaitlineContext';
 import GuestCard from '../../components/GuestCard/GuestCard';
 import BottomBar from '../../components/BottomBar/BottomBar';
 import Container from '@material-ui/core/Container';
 import LineApiService from '../../services/line-api-service';
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   line: {
@@ -24,7 +23,7 @@ export default function LiveLineRoute(props) {
       .then(res => {
         context.setGuests(res)
       })
-  }, []);
+  }, [context]);
 
   const renderLine = () => {
     let line = Array.from(context.guests)

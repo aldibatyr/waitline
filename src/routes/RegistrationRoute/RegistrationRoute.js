@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AuthApiService from '../../services/auth-api-service';
+import { Box, FormHelperText } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -42,10 +43,16 @@ export default function SignUp(props) {
   const classes = useStyles();
 
   const [first_name, setFirst] = useState(null)
+  const [firstNameError, setFirstNameError] = useState(false)
   const [last_name, setLast] = useState(null)
+  const [lastNameError, setLastNameError] = useState(false)
   const [email, setEmail] = useState(null)
+  const [emailError, setEmailError] = useState(false)
   const [username, setUsername] = useState(null)
+  const [usernameError, setUsernameError] = useState(false)
   const [password, setPassword] = useState(null)
+  const [passwordError, setPasswordError] = useState(false)
+  const [repeat_password, setRepeatPassword] = useState(null)
   const [error, setError] = useState(null)
 
   const handleSubmit = (e) => {
@@ -61,12 +68,108 @@ export default function SignUp(props) {
       })
   }
 
+  const validateFirstName = (e) => {
+    if (e.target.value.length < 2) {
+      setFirstNameError('First Name must be at least 2 characters')
+    } else {
+      setFirst(e.target.value)
+      setFirstNameError(false)
+    }
+  }
+
+  const validateLastName = (e) => {
+    if (e.target.value.length < 2) {
+      setLastNameError('Last Name must be at least 2 characters')
+    } else {
+      setLast(e.target.value)
+      setLastNameError(false)
+    }
+  } 
+
+  const validateEmail = (e) => {
+    if (e.target.value.length>4 && e.target.value.includes('@') && e.target.value.includes('.')) {
+      setEmail(e.target.value)
+      setEmailError(false)
+    } else {
+      setEmailError('Not a valid Email')
+    }
+  }
+
+  const validateUsername = (e) => {
+    if (e.target.value.length<2) {
+      setUsernameError('username must be at least 2 characters')
+    } else {
+      setUsernameError(e.target.value)
+      setUsernameError(false)
+    }
+  }
+
+  const validatePassword = (e) => {
+    const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
+    if(e.target.value.length < 8) {
+      setPasswordError('Password must be longer than 8 characters');
+    }
+    if(e.target.value.length > 72) {
+      setPasswordError('Password must be less than 72 characters');
+    }
+    if(e.target.value.startsWith(' ') || e.target.value.endsWith(' ')){
+      setPasswordError('Password must not start or end with empty spaces');
+    }
+    if(!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)){
+      setPasswordError('Password must contain one upper case, lower case, number and special character');
+    }
+    setPassword(e.target.value)
+    setPasswordError(false)
+  }
+  const renderFirstNameNotValid = () => {
+    if (firstNameError) {
+      return (
+        <FormHelperText><Typography variant="caption" color="error">{firstNameError}</Typography></FormHelperText>
+      )
+    }
+    return <></>
+  }
+
+  const renderLastNameNotValid = () => {
+    if (lastNameError) {
+      return (
+        <FormHelperText><Typography variant="caption" color="error">{lastNameError}</Typography></FormHelperText>
+      )
+    }
+    return <></>
+  }
+
+  const renderEmailNotValid = () => {
+    if (emailError) {
+      return (
+        <FormHelperText><Typography variant="caption" color="error">{emailError}</Typography></FormHelperText>
+      )
+    }
+    return <></>
+  }
+
+  const renderUsernameNotValid = () => {
+    if (usernameError) {
+      return (
+        <FormHelperText><Typography variant="caption" color="error">{usernameError}</Typography></FormHelperText>
+      )
+    }
+  }
+
+  const renderPasswordNotValid = () => {
+    if (passwordError) {
+      return (
+        <FormHelperText><Typography variant="caption" color="error">{passwordError}</Typography></FormHelperText>
+      )
+    }
+  }
+
   const renderError = () => {
     if (error) {
       return (
-        <div>
+        <Box>
           <p>{error}</p>
-        </div>
+        </Box>
       )
     }
   }
@@ -81,7 +184,7 @@ export default function SignUp(props) {
           Sign up
         </Typography>
         {renderError()}
-        <form className={classes.form} onSubmit={(e) => handleSubmit(e)} noValidate>
+        <form className={classes.form} onSubmit={(e) => handleSubmit(e)} validate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -92,9 +195,10 @@ export default function SignUp(props) {
                 fullWidth
                 id="firstName"
                 label="First Name"
-                onChange={(e) => setFirst(e.target.value)}
+                onChange={(e) => validateFirstName(e)}
                 autoFocus
               />
+              {renderFirstNameNotValid()}
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -105,8 +209,9 @@ export default function SignUp(props) {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
-                onChange={(e) => setLast(e.target.value)}
+                onChange={(e) => validateLastName(e)}
               />
+              {renderLastNameNotValid()}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -117,8 +222,9 @@ export default function SignUp(props) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => validateEmail(e)}
               />
+              {renderEmailNotValid()}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -129,8 +235,9 @@ export default function SignUp(props) {
                 label="Username"
                 name="username"
                 autoComplete="username"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => validateUsername(e)}
               />
+              {renderUsernameNotValid()}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -142,7 +249,20 @@ export default function SignUp(props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => validatePassword(e)}
+              />
+              {renderPasswordNotValid()}
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="repeat_password"
+                label="Repeat Password"
+                type="password"
+                id="repeat_password"
+                onChange={(e) => setRepeatPassword(e.target.value)}
               />
             </Grid>
           </Grid>

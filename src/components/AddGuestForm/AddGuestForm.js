@@ -1,5 +1,4 @@
 import React, {useState, useContext} from 'react';
-import clsx from 'clsx';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import WaitlineContext from '../../context/WaitlineContext';

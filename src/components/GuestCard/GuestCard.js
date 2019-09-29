@@ -1,10 +1,9 @@
 import React, {useState, useContext} from 'react';
 import WaitlineContext from '../../context/WaitlineContext';
-import Timer from '../../components/Timer/Timer';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-import { CardHeader, IconButton, Typography, CardContent, CardActions, Collapse, Avatar } from '@material-ui/core';
+import { CardHeader, IconButton, Typography, CardContent, CardActions, Collapse, Avatar, Grid, TextField, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -46,14 +45,30 @@ const useStyles = makeStyles(theme => ({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  edit: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  editOpen: {
+    transform: 'rotate(90deg)',
+  },
+  form: {
+    width: '90%',
+    margin: 'auto',
+    marginBottom: '5%'
   }
 }))
 export default function GuestCard(props) {
   const classes = useStyles();
   const context = useContext(WaitlineContext);
+  const [guest_name, setGuestName] = useState(props.name);
+  const [phone_number, setPhoneNumber] = useState(props.number);
+  const [size, setSize] = useState(props.size);
   const [expanded, setExpanded] = useState(false);
-  const [timer, setTimer] = useState()
-  const [error, setError] = useState(null);
+  const [editing, setEdits] = useState(false);
   const [id] = useState(props.id)
 
   function formatPhoneNumber(phoneNumberString) {
@@ -68,6 +83,7 @@ export default function GuestCard(props) {
   function handleExpandClick() {
     setExpanded(!expanded);
   }
+
   function handleDeleteClick() {
     console.log(id)
     LineApiService.deleteGuest(id)
@@ -76,9 +92,21 @@ export default function GuestCard(props) {
       })
   }
 
-  function renderTimer() {
-
+  function handleEditClick() {
+    setEdits(!editing);
   }
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    e.persist();
+    let inputs = {guest_name, phone_number, size}
+    return LineApiService.editGuest(inputs, id)
+      .then(() => {
+        context.updateGuest(inputs);
+      })
+  }
+
+
   return (
     <Card className={classes.card}>
       <CardHeader
@@ -95,6 +123,11 @@ export default function GuestCard(props) {
 
         }
       />
+      <CardContent className={classes.content}>
+        <Typography variant="inherit">
+          Phone Number: {formatPhoneNumber(props.number)}
+        </Typography>
+      </CardContent>
       <CardActions disableSpacing>
         <IconButton
           className={clsx(classes.expand, {
@@ -108,11 +141,6 @@ export default function GuestCard(props) {
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent className={classes.content}>
-          <Typography variant="inherit">
-            Phone Number: {formatPhoneNumber(props.number)}
-          </Typography>
-        </CardContent>
         <CardActions className={classes.actions} disableSpacing>
           <IconButton className={classes.actionButton} aria-label="confirm">
             <CheckIcon/>
@@ -120,10 +148,71 @@ export default function GuestCard(props) {
           <IconButton onClick={handleDeleteClick} className={classes.actionButton} aria-label="cancel">
             <CloseIcon/>
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleEditClick} className={clsx(classes.edit, {
+            [classes.editOpen] : editing,
+          })} aria-label="edit">
             <MoreVertIcon/>
           </IconButton>
         </CardActions>
+        <Collapse in={editing} timeout="auto" unmountOnExit>
+        <form className={classes.form} onSubmit={(e) => handleEditSubmit(e)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="gname"
+                name="guestName"
+                variant="standard"
+                fullWidth
+                id="guestName"
+                label="Guest Name"
+                autoFocus
+                placeholder="John Wick"
+                value={guest_name}
+                onChange={(e) => setGuestName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                fullWidth
+                id="phoneNumber"
+                label="Phone Number"
+                name="phoneNumber"
+                autoComplete="phoneNumber"
+                placeholder="1234567890"
+                value={phone_number}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                fullWidth
+                id="size"
+                label="Number of People"
+                name="size"
+                autoComplete="size"
+                placeholder= "E.g. 2"
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.button}
+              >
+                ADD
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+        </Collapse>
       </Collapse>
     </Card>
   )
