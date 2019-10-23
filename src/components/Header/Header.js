@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   appbar: {
+    top: 0,
     flexDirection: "row",
     justifyContent: "flex-end",
   },
@@ -66,7 +67,7 @@ export default function ButtonAppBar(props) {
   }
   return (
     <div className={classes.root}>
-      <AppBar className={classes.appbar} position="static">
+      <AppBar className={classes.appbar} position="fixed">
         <Box className={classes.box}>
           {renderUsername()}
         </Box>

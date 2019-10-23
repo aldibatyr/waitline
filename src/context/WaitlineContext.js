@@ -93,6 +93,8 @@ export class WaitlineProvider extends Component {
     })
   }
 
+  
+
   processLogin = authToken => {
     TokenService.saveAuthToken(authToken)
     const jwtPayload = TokenService.parseAuthToken()

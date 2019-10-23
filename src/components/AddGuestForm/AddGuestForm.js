@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import Slide from '@material-ui/core/Slide';
 import WaitlineContext from '../../context/WaitlineContext';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { CssBaseline, Avatar, Typography, Grid, TextField, Button } from '@material-ui/core'
@@ -38,6 +39,7 @@ function AddGuestForm(props) {
   const [guest_name, setGuestName] = useState('');
   const [phone_number, setPhoneNumber] = useState('');
   const [size, setSize] = useState('');
+  const [inView, setInView] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,8 +59,10 @@ function AddGuestForm(props) {
 
 
   function goBack() {
-    return props.history.push('/liveline')
+      props.history.push('/liveline');
   }
+
+
 
   function changeButtonText() {
     return setButtonText('Done')
@@ -67,6 +71,7 @@ function AddGuestForm(props) {
   return (
     <React.Fragment>
       <CssBaseline/>
+      <Slide direction="up" in={inView} mountOnEnter unmountOnExit>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <PersonAddIcon/>
@@ -102,6 +107,7 @@ function AddGuestForm(props) {
                 label="Phone Number"
                 name="phoneNumber"
                 autoComplete="phoneNumber"
+                type="tel"
                 value={phone_number}
                 placeholder="1234567890"
                 onChange={(e) => setPhoneNumber(e.target.value)}
@@ -115,7 +121,7 @@ function AddGuestForm(props) {
                 label="Number of People"
                 name="size"
                 autoComplete="size"
-
+                type="number"
                 placeholder= "E.g. 2"
                 onChange={(e) => setSize(e.target.value)}
               />
@@ -147,6 +153,7 @@ function AddGuestForm(props) {
           </Grid>
         </form>
       </div>
+      </Slide>
     </React.Fragment>
   )
 }

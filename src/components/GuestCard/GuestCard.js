@@ -2,7 +2,9 @@ import React, {useState, useContext} from 'react';
 import WaitlineContext from '../../context/WaitlineContext';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { green } from '@material-ui/core/colors';
 import Card from '@material-ui/core/Card';
+import Zoom from '@material-ui/core/Zoom';
 import { CardHeader, IconButton, Typography, CardContent, CardActions, Collapse, Avatar, Grid, TextField, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CheckIcon from '@material-ui/icons/Check';
@@ -16,6 +18,9 @@ const useStyles = makeStyles(theme => ({
   card: {
     maxWidth: 345,
     marginTop: theme.spacing(4),
+  },
+  cardChecked: {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   },
   header: {
     position: 'relative',
@@ -69,6 +74,8 @@ export default function GuestCard(props) {
   const [size, setSize] = useState(props.size);
   const [expanded, setExpanded] = useState(false);
   const [editing, setEdits] = useState(false);
+  const [loaded, setLoaded] = useState(true);
+  const [checked, setChecked] = useState(props.checked);
   const [id] = useState(props.id)
 
   function formatPhoneNumber(phoneNumberString) {
@@ -85,7 +92,7 @@ export default function GuestCard(props) {
   }
 
   function handleDeleteClick() {
-    console.log(id)
+    setLoaded(prev => !prev);
     LineApiService.deleteGuest(id)
       .then(() => {
         context.deleteGuest(id)
@@ -96,19 +103,32 @@ export default function GuestCard(props) {
     setEdits(!editing);
   }
 
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    e.persist();
-    let inputs = {guest_name, phone_number, size}
+  const handleEditSubmit = () => {
+
+    let time = Date.now();
+    let inputs = {guest_name, phone_number, size, time}
+    console.log(inputs)
     return LineApiService.editGuest(inputs, id)
       .then(() => {
         context.updateGuest(inputs);
       })
   }
 
+  const addTime = () => {
+    let time = new Date().getHours();
+    console.log(time)
+    return LineApiService.assignTime(time, id)
+      .then(() => {
+        context.updateGuest(time);
+      })
+  }
+
 
   return (
-    <Card className={classes.card}>
+    <Zoom in={loaded}>
+    <Card className={clsx(classes.card, {
+      [classes.cardChecked] : checked,
+    })}>
       <CardHeader
         className={classes.header}
         avatar={
@@ -142,7 +162,7 @@ export default function GuestCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardActions className={classes.actions} disableSpacing>
-          <IconButton className={classes.actionButton} aria-label="confirm">
+          <IconButton onClick={addTime} className={classes.actionButton} aria-label="confirm">
             <CheckIcon/>
           </IconButton>
           <IconButton onClick={handleDeleteClick} className={classes.actionButton} aria-label="cancel">
@@ -155,7 +175,7 @@ export default function GuestCard(props) {
           </IconButton>
         </CardActions>
         <Collapse in={editing} timeout="auto" unmountOnExit>
-        <form className={classes.form} onSubmit={(e) => handleEditSubmit(e)}>
+        <form className={classes.form} onSubmit={handleEditSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
             </Grid>
@@ -215,5 +235,6 @@ export default function GuestCard(props) {
         </Collapse>
       </Collapse>
     </Card>
+    </Zoom>
   )
 }

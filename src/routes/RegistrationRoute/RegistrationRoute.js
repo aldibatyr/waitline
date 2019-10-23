@@ -52,13 +52,13 @@ export default function SignUp(props) {
   const [usernameError, setUsernameError] = useState(false)
   const [password, setPassword] = useState(null)
   const [passwordError, setPasswordError] = useState(false)
-  const [repeat_password, setRepeatPassword] = useState(null)
+  // const [repeatPassword, setRepeatPassword] = useState(null)
+  // const [repeatPasswordError, setRepeatPasswordError] = useState(false)
   const [error, setError] = useState(null)
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let inputs = {first_name, last_name, email, username, password}
-    console.log(inputs)
     AuthApiService.postUser(inputs)
       .then(() => {
         props.history.push('/login')
@@ -99,6 +99,7 @@ export default function SignUp(props) {
     if (e.target.value.length<2) {
       setUsernameError('username must be at least 2 characters')
     } else {
+      setUsername(e.target.value)
       setUsernameError(e.target.value)
       setUsernameError(false)
     }
@@ -121,6 +122,13 @@ export default function SignUp(props) {
     setPassword(e.target.value)
     setPasswordError(false)
   }
+
+  // const validatePasswordMatch = () => {
+  //   if (password !== repeatPassword) {
+  //     setRepeatPasswordError('Passwords do not match')
+  //   }
+  // }
+
   const renderFirstNameNotValid = () => {
     if (firstNameError) {
       return (
@@ -154,6 +162,7 @@ export default function SignUp(props) {
         <FormHelperText><Typography variant="caption" color="error">{usernameError}</Typography></FormHelperText>
       )
     }
+    return <></>
   }
 
   const renderPasswordNotValid = () => {
@@ -162,7 +171,12 @@ export default function SignUp(props) {
         <FormHelperText><Typography variant="caption" color="error">{passwordError}</Typography></FormHelperText>
       )
     }
+    return <></>
   }
+
+  // const renderPasswordMatchNotValid = () => {
+  //   return ((repeatPasswordError) ? <FormHelperText><Typography variant="caption" color="error">{repeatPasswordError}</Typography></FormHelperText> : <></>)
+  // }
 
   const renderError = () => {
     if (error) {
@@ -253,7 +267,7 @@ export default function SignUp(props) {
               />
               {renderPasswordNotValid()}
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
@@ -262,9 +276,10 @@ export default function SignUp(props) {
                 label="Repeat Password"
                 type="password"
                 id="repeat_password"
-                onChange={(e) => setRepeatPassword(e.target.value)}
+                onChange={(e) => setRepeatPassword(e.target.value).then(validatePasswordMatch())}
               />
-            </Grid>
+              {renderPasswordMatchNotValid()}
+            </Grid> */}
           </Grid>
           <Button
             type="submit"

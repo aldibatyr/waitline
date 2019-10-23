@@ -9,8 +9,15 @@ import { makeStyles} from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
   line: {
     height: '100%',
+    marginTop: 100,
     marginBottom: 100
+  },
+  message: {
+    height: '100',
+    width: '100',
+    background: 'black'
   }
+
 }))
 
 
@@ -23,11 +30,14 @@ export default function LiveLineRoute(props) {
       .then(res => {
         context.setGuests(res)
       })
-  }, [context]);
+  }, []);
 
   const renderLine = () => {
+    console.log(context.guests)
     let line = Array.from(context.guests)
-    line = line.map((guest) => <GuestCard key={guest.id} size={guest.size} id={guest.id} name={guest.guest_name} number={guest.phone_number}/>)
+    line = line.sort(function(a,b) {return a.id - b.id}).map((guest) => (
+        <GuestCard {...props} key={guest.id} size={guest.size} id={guest.id} name={guest.guest_name} number={guest.phone_number}/>
+      ))
     return (
         <Container className={classes.line} component="section">
           {line}
@@ -35,6 +45,7 @@ export default function LiveLineRoute(props) {
       )
 
   }
+
  
   return (
     <Container component="main" maxWidth="xs">

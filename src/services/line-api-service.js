@@ -67,6 +67,26 @@ const LineApiService = {
       .catch(error => {
         console.error({error})
       }) 
+  },
+  assignTime(time, guestId) {
+    return fetch(`${config.API_ENDPOINT}/line/${guestId}`, {
+      method: 'PATCH',
+      headers: {
+        'authorization': `Bearer ${TokenService.getAuthToken()}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(time)
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(e => Promise.reject(e))
+        } else {
+          return res
+        }
+      })
+      .catch(error => {
+        console.error({error})
+      })
   }
 }
 
