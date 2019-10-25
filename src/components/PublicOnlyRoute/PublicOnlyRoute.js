@@ -11,7 +11,7 @@ export default function PublicOnlyRoute({ component, ...props }) {
         <WaitlineContext.Consumer>
           {waitlineContext =>
             !!waitlineContext.user.id
-            ? <Redirect to={'/'} />
+            ? <Redirect to={'/login'} />
             : <Component {...componentProps} />
           }
         </WaitlineContext.Consumer>

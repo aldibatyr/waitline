@@ -10,7 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { red, green } from '@material-ui/core/colors';
+import { red,} from '@material-ui/core/colors';
 import LineApiService from '../../services/line-api-service';
 
 
@@ -18,9 +18,6 @@ const useStyles = makeStyles(theme => ({
   card: {
     maxWidth: 345,
     marginTop: theme.spacing(4),
-  },
-  cardChecked: {
-    backgroundColor: green[500]
   },
   header: {
     position: 'relative',
@@ -79,7 +76,6 @@ export default function GuestCard(props) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEdits] = useState(false);
   const [loaded, setLoaded] = useState(true);
-  const [checked, setChecked] = useState(props.calledOn);
   const [id] = useState(props.id)
 
   function formatPhoneNumber(phoneNumberString) {
@@ -107,8 +103,7 @@ export default function GuestCard(props) {
     setEdits(!editing);
   }
 
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
+  const handleEditSubmit = () => {
     let inputs = {guest_name, phone_number, size}
     LineApiService.editGuest(inputs, id)
       .then(() => {
@@ -116,12 +111,6 @@ export default function GuestCard(props) {
       })
   }
 
-  const switchToChecked = () => {
-    if (props.calledOn) {
-      return setChecked(true)
-    }
-
-  }
   const addTime = () => {
     let calledOn = moment().format();
     let inputWithTime = {calledOn};
@@ -130,13 +119,13 @@ export default function GuestCard(props) {
         console.log('context update ran')
         context.updateGuest(inputWithTime);
       })
-    return switchToChecked();
+    window.location.reload();
   }
 
   const renderTime = () => {
     if (props.calledOn) {
       return (
-        <span className={classes.importantInfo}>{moment(props.calledOn).fromNow()}</span>
+        <span className={classes.importantInfo}>{moment(props.calledOn).format('hh:mm a')}</span>
       )
     }
     return (
@@ -145,9 +134,7 @@ export default function GuestCard(props) {
   }
   return (
     <Zoom in={loaded}>
-    <Card className={clsx(classes.card, {
-      [classes.cardChecked] : checked,
-    })}>
+    <Card className={classes.card}>
       <CardHeader
         className={classes.header}
         avatar={
@@ -198,7 +185,7 @@ export default function GuestCard(props) {
           </IconButton>
         </CardActions>
         <Collapse in={editing} timeout="auto" unmountOnExit>
-        <form className={classes.form} onSubmit={e=>handleEditSubmit(e)}>
+        <form className={classes.form} onSubmit={handleEditSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
             </Grid>

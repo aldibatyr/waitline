@@ -1,4 +1,4 @@
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import WaitlineContext from '../../context/WaitlineContext';
 import GuestCard from '../../components/GuestCard/GuestCard';
 import BottomBar from '../../components/BottomBar/BottomBar';
@@ -25,12 +25,12 @@ export default function LiveLineRoute(props) {
   const classes = useStyles();
   const {guests, setGuests} = useContext(WaitlineContext);
 
-  useMemo(() => {
+  useEffect(() => {
     LineApiService.getLine()
       .then((res) => {
         setGuests(res)
       })
-  }, []);
+  }, [setGuests]);
 
   const renderLine = () => {
     console.log(guests)
