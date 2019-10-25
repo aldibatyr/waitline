@@ -1,8 +1,8 @@
 import React, {useState, useContext} from 'react';
+import moment from 'moment';
 import WaitlineContext from '../../context/WaitlineContext';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { green } from '@material-ui/core/colors';
 import Card from '@material-ui/core/Card';
 import Zoom from '@material-ui/core/Zoom';
 import { CardHeader, IconButton, Typography, CardContent, CardActions, Collapse, Avatar, Grid, TextField, Button } from '@material-ui/core';
@@ -10,7 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { red } from '@material-ui/core/colors';
+import { red, green } from '@material-ui/core/colors';
 import LineApiService from '../../services/line-api-service';
 
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(4),
   },
   cardChecked: {
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    backgroundColor: green[500]
   },
   header: {
     position: 'relative',
@@ -28,6 +28,10 @@ const useStyles = makeStyles(theme => ({
   content: {
     width: '90%',
     margin: '0 auto',
+    display: 'grid'
+  },
+  contentTextBlock: {
+    marginBottom: '5%'
   },
   avatar: {
     position: 'absolute',
@@ -75,7 +79,7 @@ export default function GuestCard(props) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEdits] = useState(false);
   const [loaded, setLoaded] = useState(true);
-  const [checked, setChecked] = useState(props.checked);
+  const [checked, setChecked] = useState(props.calledOn);
   const [id] = useState(props.id)
 
   function formatPhoneNumber(phoneNumberString) {
@@ -103,27 +107,42 @@ export default function GuestCard(props) {
     setEdits(!editing);
   }
 
-  const handleEditSubmit = () => {
-
-    let time = Date.now();
-    let inputs = {guest_name, phone_number, size, time}
-    console.log(inputs)
-    return LineApiService.editGuest(inputs, id)
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    let inputs = {guest_name, phone_number, size}
+    LineApiService.editGuest(inputs, id)
       .then(() => {
         context.updateGuest(inputs);
       })
   }
 
+  const switchToChecked = () => {
+    if (props.calledOn) {
+      return setChecked(true)
+    }
+
+  }
   const addTime = () => {
-    let time = new Date().getHours();
-    console.log(time)
-    return LineApiService.assignTime(time, id)
-      .then(() => {
-        context.updateGuest(time);
+    let calledOn = moment().format();
+    let inputWithTime = {calledOn};
+    LineApiService.assignTime(inputWithTime, id)
+      .then((res) => {
+        console.log('context update ran')
+        context.updateGuest(inputWithTime);
       })
+    return switchToChecked();
   }
 
-
+  const renderTime = () => {
+    if (props.calledOn) {
+      return (
+        <span className={classes.importantInfo}>{moment(props.calledOn).fromNow()}</span>
+      )
+    }
+    return (
+      <span className={classes.importantInfo}>Not Yet</span>
+    )
+  }
   return (
     <Zoom in={loaded}>
     <Card className={clsx(classes.card, {
@@ -144,8 +163,12 @@ export default function GuestCard(props) {
         }
       />
       <CardContent className={classes.content}>
-        <Typography variant="inherit">
-          Phone Number: {formatPhoneNumber(props.number)}
+        <Typography variant="inherit" className={classes.contentTextBlock}>
+          Phone Number: <span className={classes.importantInfo}>{formatPhoneNumber(props.number)}</span>
+        </Typography>
+
+        <Typography variant="inherit" className={classes.contentTextBlock}>
+          Called On: {renderTime()}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -175,7 +198,7 @@ export default function GuestCard(props) {
           </IconButton>
         </CardActions>
         <Collapse in={editing} timeout="auto" unmountOnExit>
-        <form className={classes.form} onSubmit={handleEditSubmit}>
+        <form className={classes.form} onSubmit={e=>handleEditSubmit(e)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
             </Grid>

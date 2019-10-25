@@ -83,7 +83,6 @@ function AddGuestForm(props) {
         <form className={classes.form} onSubmit={(e) => handleSubmit(e)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {console.log(error)}
             </Grid>
             <Grid item xs={12}>
               <TextField

@@ -87,6 +87,7 @@ export class WaitlineProvider extends Component {
   }
 
   updateGuest = (updatedGuest) => {
+    console.log('from context console')
     this.setState({
       guests: this.state.guests.map(
         guest => (guest.id !== updatedGuest.id) ? guest : updatedGuest)

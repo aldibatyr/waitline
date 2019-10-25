@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useMemo} from 'react';
 import WaitlineContext from '../../context/WaitlineContext';
 import GuestCard from '../../components/GuestCard/GuestCard';
 import BottomBar from '../../components/BottomBar/BottomBar';
@@ -23,20 +23,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function LiveLineRoute(props) {
   const classes = useStyles();
-  const context = useContext(WaitlineContext);
+  const {guests, setGuests} = useContext(WaitlineContext);
 
-  useEffect(() => {
+  useMemo(() => {
     LineApiService.getLine()
-      .then(res => {
-        context.setGuests(res)
+      .then((res) => {
+        setGuests(res)
       })
   }, []);
 
   const renderLine = () => {
-    console.log(context.guests)
-    let line = Array.from(context.guests)
+    console.log(guests)
+    let line = Array.from(guests)
     line = line.sort(function(a,b) {return a.id - b.id}).map((guest) => (
-        <GuestCard {...props} key={guest.id} size={guest.size} id={guest.id} name={guest.guest_name} number={guest.phone_number}/>
+        <GuestCard {...props} key={guest.id} size={guest.size} id={guest.id} name={guest.guest_name} number={guest.phone_number} calledOn={guest.calledOn} />
       ))
     return (
         <Container className={classes.line} component="section">
