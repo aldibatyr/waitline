@@ -33,7 +33,6 @@ export default function LiveLineRoute(props) {
   }, [setGuests]);
 
   const renderLine = () => {
-    console.log(guests)
     let line = Array.from(guests)
     line = line.sort(function(a,b) {return a.id - b.id}).map((guest) => (
         <GuestCard {...props} key={guest.id} size={guest.size} id={guest.id} name={guest.guest_name} number={guest.phone_number} calledOn={guest.calledOn} />

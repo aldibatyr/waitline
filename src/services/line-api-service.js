@@ -51,7 +51,6 @@ const LineApiService = {
     }
   },
   async editGuest(editedFields, guestId) {
-    console.log('edit guest ran')
     try {
       const res = await fetch(`${config.API_ENDPOINT}/line/${guestId}`, {
         method: 'PATCH',

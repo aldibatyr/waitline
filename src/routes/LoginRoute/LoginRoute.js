@@ -48,15 +48,12 @@ export default function SignIn(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     let input = {username, password}
-    console.log(input)
     AuthApiService.postLogin(input)
       .then(res => {
-        console.log(e)
         context.processLogin(res.authToken)
         props.history.push('/liveline')
       })
       .catch(res => {
-        console.log(res)
         setError(res.error)
       })
   }

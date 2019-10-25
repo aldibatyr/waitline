@@ -116,7 +116,6 @@ export default function GuestCard(props) {
     let inputWithTime = {calledOn};
     LineApiService.assignTime(inputWithTime, id)
       .then((res) => {
-        console.log('context update ran')
         context.updateGuest(inputWithTime);
       })
     window.location.reload();
