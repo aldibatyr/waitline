@@ -117,8 +117,8 @@ export default function GuestCard(props) {
     LineApiService.assignTime(inputWithTime, id)
       .then((res) => {
         context.updateGuest(inputWithTime);
+        setTimeout(window.location.reload(), 2000);
       })
-    window.location.reload();
   }
 
   const renderTime = () => {

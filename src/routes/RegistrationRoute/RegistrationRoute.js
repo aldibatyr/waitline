@@ -182,7 +182,7 @@ export default function SignUp(props) {
     if (error) {
       return (
         <Box>
-          <p>{error}</p>
+          <p>{error.message}</p>
         </Box>
       )
     }
