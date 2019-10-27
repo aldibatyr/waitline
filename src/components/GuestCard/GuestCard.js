@@ -112,7 +112,7 @@ export default function GuestCard(props) {
   }
 
   const addTime = () => {
-    let calledOn = moment().format();
+    let calledOn = moment.utc().format();
     let inputWithTime = {calledOn};
     LineApiService.assignTime(inputWithTime, id)
       .then((res) => {
